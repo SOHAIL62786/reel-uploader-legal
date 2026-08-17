@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TikTok Login Callback</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    font-family: -apple-system, Arial, sans-serif;
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+    color: #222;
+  }
+  h1 { font-size: 1.4em; }
+  .box {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 0.95em;
+  }
+  .label { font-weight: bold; margin-top: 20px; }
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+  }
+  button:hover { background: #eee; }
+  .copied { color: #0a7d2b; font-size: 0.9em; margin-left: 8px; }
+  .error { color: #b00020; }
+</style>
+</head>
+<body>
+
+<h1>TikTok Login Callback</h1>
+<p>TikTok has redirected you here after login. Copy the authorization code below and paste it into your terminal.</p>
+
+<div class="label">Authorization Code:</div>
+<div class="box" id="code">Reading URL...</div>
+<button onclick="copyCode()">Copy code</button>
+<span class="copied" id="copiedMsg" style="display:none;">Copied!</span>
+
+<div id="errorSection" style="display:none;">
+  <div class="label error">Error:</div>
+  <div class="box error" id="errorBox"></div>
+</div>
+
+<div class="label">Full redirect URL (for debugging):</div>
+<div class="box" id="fullUrl"></div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const error = params.get('error');
+  const errorDescription = params.get('error_description');
+
+  document.getElementById('fullUrl').textContent = window.location.href;
+
+  if (code) {
+    document.getElementById('code').textContent = code;
+  } else {
+    document.getElementById('code').textContent = 'No code found in URL.';
+  }
+
+  if (error) {
+    document.getElementById('errorSection').style.display = 'block';
+    document.getElementById('errorBox').textContent = error + (errorDescription ? ': ' + errorDescription : '');
+  }
+
+  function copyCode() {
+    const text = document.getElementById('code').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const msg = document.getElementById('copiedMsg');
+      msg.style.display = 'inline';
+      setTimeout(() => { msg.style.display = 'none'; }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
